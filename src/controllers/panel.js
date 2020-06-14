@@ -57,7 +57,6 @@ function savePanel(req, res) {
   console.log(req.body);
   let panel = new Panel();
   panel.name = req.body.name;
-  panel.picture = req.body.picture;
   panel.azimut = req.body.azimut;
   panel.elevation=req.body.elevation;
   panel.description = req.body.description;
