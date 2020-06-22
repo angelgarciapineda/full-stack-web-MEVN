@@ -4,32 +4,27 @@ const jwt = require("jwt-simple");
 const moment = require("moment");
 const config = require("../config");
 
-//Instalar npm install --save moment
 function createToken(user) {
   const payload = {
-    sub: user._id, //es el id que se crea en la bd
-    iat: moment().unix(), //devuelve la fecha en que fue creado
-    exp: moment().add(14, "days").unix(), //determinar una fecha de caducidad
-    //se está indicando que son 14 días a partir de la creación
+    sub: user._id, //L'ID c'est de la bd
+    iat: moment().unix(), //renvoie la date
+    exp: moment().add(14, "days").unix(), //définir une heure d'expiration
   };
-
-  //return jwt.encode(payload, config.SECRET_TOKEN);
   return jwt.encode(payload, config.SECRET_TOKEN);
 }
 
 function decodeToken(token) {
-  //promesas
   const decoded = new Promise((resolve, reject) => {
     try {
       const payload = jwt.decode(token, config.SECRET_TOKEN);
-      //verificar si ya caducó
+      //Verifier si le token a déjà expiré
       if (payload.exp <= moment().unix()) {
         reject({
           status: 401,
           message: "Le token a expiré",
         });
       }
-      resolve(payload.sub); //devuelve el token
+      resolve(payload.sub); //renvoie le token
     } catch (error) {
       reject({
         status: 500,

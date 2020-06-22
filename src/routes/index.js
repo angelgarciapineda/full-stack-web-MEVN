@@ -13,6 +13,7 @@ api.put("/panel/:panelId", panelController.updatePanel);
 api.delete("/panel/:panelId", panelController.deletePanel);
 api.post("/signup", userController.signUp);
 api.post("/signin", userController.signIn);
+api.post("/casa", userController.addHome);
 api.get("/private", auth, (req, res) => {
   res.status(200).send({ message: "Tienes acceso" });
 });

@@ -94,6 +94,7 @@ class Panel {
   }
 }
 export default {
+  name:"Panel",
   data() {
     return {
       panel: new Panel(),
@@ -116,7 +117,7 @@ export default {
           body: JSON.stringify(this.panel),
           headers: {
             Accept:
-              "application/json" /* C'est pour indiquer qu'on va envoyer des données de type json*/,
+              "application/json", /* C'est pour indiquer qu'on va envoyer des données de type json*/
             "Content-type": "application/json"
           }
         }) /* On fait un promise then pour apporter les donnéés mais on l'apporte en format json*/

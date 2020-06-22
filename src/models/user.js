@@ -1,3 +1,4 @@
+/* UTILISATEURS */
 "use strict";
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -5,15 +6,43 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
 const UserSchema = new Schema({
-  email: { type: String, unique: true, lowercase: true },
+  email: {
+    type: String,
+    unique: true,
+    lowercase: true
+  },
   displayName: String,
   avatar: String,
-  password: { type: String, select: false }, //select en false para que cada se haga un apetición get no devuelva el pass x seguridad
-  signupDate: { type: Date, default: Date.now() },
-  lastLogin: Date,
+  password: {
+    type: String,
+    select: false
+  }, //On laisse le mot de passe en false pour ne pas l'afficher dans la bd
+  signupDate: {
+    type: Date,
+    default: Date.now()
+  },
+  homes: [
+    {
+      type: Object,
+      panels: [
+        {
+          type: Object,
+          targets: [
+            {
+              type: Object,
+              timeslots: [
+                {
+                  type: Object
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 });
 
-//funcion para que que antes de que salve el esquema en la BD encripte el password
 //fonctionne de telle sorte qu'avant d'enregistrer le schéma dans la base de données, je crypte le mot de passe
 UserSchema.pre("save", function (next) {
   let user = this;
@@ -22,8 +51,8 @@ UserSchema.pre("save", function (next) {
   bcrypt.genSalt(10, (err, salt) => {
     if (err) return next(err);
 
-    //para encriptar
-    bcrypt.hash(user.password, salt, null, (err, hash) => {
+    //partie cryptage
+    bcrypt.hash(user.password, salt, (err, hash) => {
       if (err) return next(err);
 
       user.password = hash;
@@ -32,7 +61,6 @@ UserSchema.pre("save", function (next) {
   });
 });
 
-//function para devolver un avatar a apartir de un email
 UserSchema.methods.gravatar = function (size) {
   if (!size) {
     size = 200;
@@ -44,10 +72,11 @@ UserSchema.methods.gravatar = function (size) {
 };
 
 UserSchema.methods.comparePassword = function (candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    cb(err, isMatch)
+  let user = this;
+  bcrypt.compare(candidatePassword, user.password, (err, isMatch) => {
+    return cb(err, isMatch)
   });
-  console.log(this.password);
+  console.log(user.password);
 }
 
 
