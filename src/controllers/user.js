@@ -1,7 +1,6 @@
 "use strict";
 const User = require("../models/user");
 const Home = require("../models/home");
-const Panel = require("../models/panel");
 const service = require("../services");
 
 function signUp(req, res) {
@@ -23,73 +22,6 @@ function signUp(req, res) {
       .send({ auth: true, token: service.createToken(user) });
   });
 }
-function addPanel(req, res) {
-  let p;
-  if (req.body._id) {
-    User.update({ _id: req.body._id }, {
-      $push: {
-        "panels": p = new Panel({
-          name: req.body.name,
-          azimut: req.body.azimut,
-          elevation: req.body.elevation
-        })
-      }
-    },
-      (error) => {
-        if (error) {
-          return res.json({
-            sucess: false,
-            msj: "No se puede agregar panel",
-            error
-          });
-        } else {
-          return res.json({
-            sucess: true,
-            msj: "Se agregó correctamente el panel",
-            id_de_la_casa: p._id
-          });
-        }
-      })
-  } else {
-    return res.json({
-      sucess: false,
-      msj: "No se puede agregar casa por favor especifique que el _id del usuario sea correcto"
-    });
-  }
-}
-function addHome(req, res) {
-  let h;
-  if (req.body._id) {
-    User.update({ _id: req.body._id }, {
-      $push: {
-        "home": h = new Home({
-          name: req.body.nom
-        })
-      }
-    },
-      (error) => {
-        if (error) {
-          return res.json({
-            sucess: false,
-            msj: "No se puede agregar casa",
-            error
-          });
-        } else {
-          return res.json({
-            sucess: true,
-            msj: "Se agregó correctamente la casa",
-            id_de_la_casa: h._id
-          });
-        }
-      })
-  } else {
-    return res.json({
-      sucess: false,
-      msj: "No se puede agregar casa por favor especifique que el _id del usuario sea correcto"
-    });
-  }
-}
-
 function signIn(req, res) {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err)
@@ -111,14 +43,99 @@ function signIn(req, res) {
       return res.status(200).send({
         msg: "Connection réussie",
         token: service.createToken(user),
+        iduser: user._id
       });
     });
   }).select("_id email +password");
 }
+function addHome(req, res) {
+  let h = new Home();
+  h.name = req.body.name;
+  h.street = req.body.street;
+  h.postalcode = req.body.postalcode;
+  h.city = req.body.city;
+  h.latitude = req.body.latitude;
+  h.longitude = req.body.longitude;
+
+  h.save()
+  //Réaliser la réference
+  User.updateOne({ _id: req.params.userId }, {
+    $push: {
+      "homes": h._id
+    }
+  },
+    (error) => {
+      if (error) {
+        res.json({
+          sucess: false,
+          msj: "No se pudo hacer la referencia",
+          error
+        });
+      } else {
+        res.json({
+          sucess: true,
+          msj: "La maison a été ajoutée avec succès",
+          id_home: h._id
+        });
+      }
+    })
+
+}
+function getHomes(req, res) {
+  User.findById({ _id: req.params.userId })
+    .populate('homes')
+    .exec((err, user) => {
+      if (err)
+        return res.status(500).send({ message: `Erreur ${err}` });
+      if (!user)
+        return res.status(400).send({ message: `On ne peut pas trouver les données de cet utilisateur` })
+
+      //let _homes = users.homes;
+      return res.status(200).send({ user });
+    })
+}
 
 
+/* function addHome(req, res) {
+  let h;
+  if (req.params.userId) {
+    User.update({ _id: req.params.userId }, {
+      $push: {
+        "homes": h = new Home({
+          name: req.body.name,
+          street: req.body.street,
+          postalcode: req.body.postalcode,
+          city: req.body.city,
+          latitude: req.body.latitude,
+          longitude: req.body.longitude
+        })
+      }
+    },
+      (error) => {
+        if (error) {
+          return res.json({
+            sucess: false,
+            msj: "La maison ne peut pas être fouillée",
+            error
+          });
+        } else {
+          return res.json({
+            sucess: true,
+            msj: "La maison a été ajoutée avec succès",
+            id_home: h._id
+          });
+        }
+      })
+  } else {
+    return res.json({
+      sucess: false,
+      msj: "L'utilisateur n'existe pas"
+    });
+  }
+} */
 module.exports = {
   signIn,
   signUp,
-  addHome
+  addHome,
+  getHomes
 };

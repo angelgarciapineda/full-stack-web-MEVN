@@ -23,22 +23,7 @@ const UserSchema = new Schema({
   },
   homes: [
     {
-      type: Object,
-      panels: [
-        {
-          type: Object,
-          targets: [
-            {
-              type: Object,
-              timeslots: [
-                {
-                  type: Object
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      type: Schema.Types.ObjectId, ref: 'Home', require:false
     }
   ]
 });
