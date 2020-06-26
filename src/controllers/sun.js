@@ -2,10 +2,15 @@
 function getPositionSun(req, res) {
     var day, plat, plon, gmtdiff, azimuth, altitude;
 
-    day = req.body.day;
-    plat = req.body.plat;
-    plon = req.body.plon;
+    day = req.body.date +" "+req.body.time;
+    plat = req.body.latitude;
+    plon = req.body.longitude;
     gmtdiff = req.body.gmtdiff;
+
+    console.log(day)
+    console.log(plat)
+    console.log(plon)
+    console.log(gmtdiff)
 
     function to360range(num) {
         if (num > 360) return num - Math.floor(num / 360) * 360;
@@ -113,6 +118,7 @@ function getPositionSun(req, res) {
 
     console.log("azimuth", azimuth);
     console.log("elevacion", altitude);
+    
 }
 
 module.exports={
