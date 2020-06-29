@@ -1,4 +1,6 @@
 'use-strict';
+
+/* Fonction pour obtenir la position du soleil */
 function getPositionSun(req, res) {
     var day, plat, plon, gmtdiff, azimuth, altitude;
 
@@ -118,7 +120,6 @@ function getPositionSun(req, res) {
 
     console.log("azimuth", azimuth);
     console.log("elevacion", altitude);
-    
 }
 
 module.exports={

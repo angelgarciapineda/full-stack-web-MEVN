@@ -3,7 +3,7 @@
 const jwt = require("jwt-simple");
 const moment = require("moment");
 const config = require("../config");
-
+/* Fonction pour créer un token à partir de l'ID de l'utilisateur */
 function createToken(user) {
   const payload = {
     sub: user._id, //L'ID c'est de la bd

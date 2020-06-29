@@ -19,6 +19,7 @@ api.post("/signin", userController.signIn);
 
 api.post("/home/:userId", userController.addHome);
 api.get("/home/:userId", userController.getHomes);
+api.delete("/home/:homeId", userController.deleteHome);
 
 api.post("/panel/:homeId", homeController.addPanel);
 api.get("/panel/:homeId", homeController.getPanels);

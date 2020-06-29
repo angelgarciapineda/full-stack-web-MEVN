@@ -47,7 +47,7 @@ function deletePanel(req, res) {
       if (err)
         res
           .status(500)
-          .send({ message: `Erreur lors de l'enlèvement du panneau  : ${err}` });
+          .send({ message: `Erreur lors de la suppression du panneau  : ${err}` });
       res.status(200).send({ message: `Le panneau a été effacé` });
     });
   });
