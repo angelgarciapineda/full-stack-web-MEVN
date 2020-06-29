@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const PanelSchema = new Schema({
   name: {type: String},
-  azimut: {
+  azimuth: {
     type: Number,
     default: 0
   },
