@@ -51,6 +51,59 @@ function getPanels(req, res) {
             return res.status(200).send({ home });
         })
 }
+/* Fonction pour obtenir un Panneau en particulier */
+function getPanel(req, res) {
+    let PanelId = req.params.panelId;
+    Panel.findById(PanelId, (err, panel) => {
+        if (err)
+            return res
+                .status(500)
+                .send({ message: `Erreur ${err}` });
+        if (!panel)
+            return res.status(404).send({ message: `Le logement n'existe pas` });
+        res.status(200).send({ panel });
+    });
+}
+/* Fonction pour effacer un panneau en particulier */
+function deletePanel(req, res) {
+    Panel.findByIdAndRemove({ _id: req.params.panelId }, (err, panelRemoved) => {
+        if (err) {
+            res.status(500).send({ message: "ERREUR : ", err })
+        }
+        if (!panelRemoved) {
+            res.status(400).send({ message: "ERREUR ne se peut pas effacer le logement" })
+        }
+        else {
+            /* Après d'effacer le panneau on supprime la référence
+            qui existe dans le modèle de "Home" */
+            Home.findByIdAndUpdate({ _id: req.params.homeId }, {
+                '$pull': {
+                    'panels': req.params.panelId
+                }
+            }, (err, updatePanel) => {
+                if (err) {
+                    res.status(500).send({ message: `ERREUR ${err}` })
+                }
+                if (!updatePanel) {
+                    res.status(400).send({ message: `Suppression pas réussie` })
+                }
+                res.status(200).send({ message: `Suppression réussie du logement ${panelRemoved} ` + ` Modification réussie de référence ${updatePanel}` })
+            })
+        }
+    })
+}
+/* Fonction pour modifier un pannneau en particulier */
+function updatePanel(req, res) {
+    let panelId = req.params.panelId;
+    let update = req.body;
+    Panel.findByIdAndUpdate(panelId, update, (err, panelUpdated) => {
+        if (err)
+            res
+                .status(500)
+                .send({ message: `Erreur lors de la modification du logement : ${err}` });
+        res.status(200).send({ panel: panelUpdated });
+    });
+}
 /* Fonction pour enregistrer un cible dans la maison */
 function addTarget(req, res) {
     let t = new Target();
@@ -96,10 +149,68 @@ function getTargets(req, res) {
             return res.status(200).send({ home });
         })
 }
-
+/* Fonction pour obtenir un cible en particulier */
+function getTarget(req, res) {
+    let TargetId = req.params.targetId;
+    Target.findById(TargetId, (err, target) => {
+        if (err)
+            return res
+                .status(500)
+                .send({ message: `Erreur ${err}` });
+        if (!target)
+            return res.status(404).send({ message: `Le logement n'existe pas` });
+        res.status(200).send({ target });
+    });
+}
+/* Fonction pour effacer un cible en particulier */
+function deleteTarget(req, res) {
+    Target.findByIdAndRemove({ _id: req.params.targetId }, (err, targetRemoved) => {
+        if (err) {
+            res.status(500).send({ message: "ERREUR : ", err })
+        }
+        if (!targetRemoved) {
+            res.status(400).send({ message: "ERREUR ne se peut pas effacer le logement" })
+        }
+        else {
+            /* Après d'effacer le cible on supprime la référence
+            qui existe dans le modèle de "Home" */
+            Home.findByIdAndUpdate({ _id: req.params.homeId }, {
+                '$pull': {
+                    'targets': req.params.targetId
+                }
+            }, (err, updateTarget) => {
+                if (err) {
+                    res.status(500).send({ message: `ERREUR ${err}` })
+                }
+                if (!updatePanel) {
+                    res.status(400).send({ message: `Suppression pas réussie` })
+                }
+                res.status(200).send({ message: `Suppression réussie du logement ${targetRemoved} ` + ` Modification réussie de référence ${updateTarget}` })
+            })
+        }
+    })
+}
+/* Fonction pour modifier un cible en particulier */
+function updateTarget(req, res) {
+    let targetId = req.params.targetId;
+    let update = req.body;
+    Target.findByIdAndUpdate(targetId, update, (err, targetUpdated) => {
+        if (err)
+            res
+                .status(500)
+                .send({ message: `Erreur lors de la modification du logement : ${err}` });
+        res.status(200).send({ target: targetUpdated });
+    });
+}
 module.exports = {
     addPanel,
     getPanels,
+    getPanel,
+    deletePanel,
+    updatePanel,
     addTarget,
-    getTargets
+    getTargets,
+    getTarget,
+    deleteTarget,
+    updateTarget
 };
