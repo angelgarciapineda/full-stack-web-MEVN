@@ -59,8 +59,8 @@ function addTarget(req, res) {
     t.longitude = req.body.longitude;
 
     t.save()
-    /* Pour réaliser la réference du cible avec la maison
-    je dois modifier l'attribut de "targets" qui se trouve dans le modèle de "Home" */
+    /* Pour réaliser la référence du cible avec la maison
+    on doit modifier l'attribut de "targets" qui se trouve dans le modèle de "Home" */
     Home.updateOne({ _id: req.params.homeId }, {
         $push: {
             "targets": t._id

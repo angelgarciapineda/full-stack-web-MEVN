@@ -1,6 +1,7 @@
 'use-strict';
 
-/* Fonction pour obtenir la position du soleil */
+/* Fonction pour obtenir la position du soleil
+à partir de la date, des coordonnées, du GMT*/
 function getPositionSun(req, res) {
     var day, plat, plon, gmtdiff, azimuth, altitude;
 
@@ -113,6 +114,7 @@ function getPositionSun(req, res) {
         x * Math.cos((plat * Math.PI) / 180) +
         z * Math.sin((plat * Math.PI) / 180);
 
+    /*On remplit l'azimuth et l'hauteur (altitude)  */
     azimuth = to360range(Math.atan2(yhor, xhor) * (180 / Math.PI) + 180);
     altitude = Math.asin(zhor) * (180 / Math.PI);
 

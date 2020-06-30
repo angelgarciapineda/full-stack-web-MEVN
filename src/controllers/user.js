@@ -25,7 +25,6 @@ function signUp(req, res) {
       .send({ auth: true, token: service.createToken(user) });
   });
 }
-
 //Fonction pour se connecter
 function signIn(req, res) {
   //findOne recherche le email dans le modèle User
@@ -56,7 +55,6 @@ function signIn(req, res) {
     });
   }).select("_id email +password");
 }
-
 //Fonction pour enregistrer une maison
 function addHome(req, res) {
   let h = new Home();
@@ -108,18 +106,65 @@ function getHomes(req, res) {
       return res.status(200).send({ user });
     })
 }
+/* Fonction pour obtenir un logement en particulier */
+function getHome(req, res) {
+  let HomeId = req.params.homeId;
+  Home.findById(HomeId, (err, home) => {
+    if (err)
+      return res
+        .status(500)
+        .send({ message: `Erreur ${err}` });
+    if (!home)
+      return res.status(404).send({ message: `Le logement n'existe pas` });
+    res.status(200).send({ home });
+  });
+}
+/* Fonction pour effacer un logement en particulier */
 function deleteHome(req, res) {
-  Home.findByIdAndRemove({_id:req.params.homeId},(err, homeRemoved)=>{
-    if(err){
-      res.status(500).send({message: "ERREUR : ", err})
-    }else{
+  Home.findByIdAndRemove({ _id: req.params.homeId }, (err, homeRemoved) => {
+    if (err) {
+      res.status(500).send({ message: "ERREUR : ", err })
+    }
+    if (!homeRemoved) {
+      res.status(400).send({ message: "ERREUR ne se peut pas effacer le logement" })
+    }
+    else {
+      /* Après d'effacer le logement on supprime la référence
+      qui existe dans le modèle de "User" */
+      User.findByIdAndUpdate({ _id: req.params.userId }, {
+        '$pull': {
+          'homes': req.params.homeId
+        }
+      }, (err, updateHome) => {
+        if (err) {
+          res.status(500).send({ message: `ERREUR ${err}` })
+        }
+        if (!updateHome) {
+          res.status(400).send({ message: `Suppression pas réussie` })
+        }
+        res.status(200).send({ message: `Suppression réussie du logement ${homeRemoved} ` + ` Modification réussie de référence ${updateHome}` })
+      })
     }
   })
+}
+/* Fonction pour modifier un logement en particulier */
+function updateHome(req, res) {
+  let homeId = req.params.homeId;
+  let update = req.body;
+  Home.findByIdAndUpdate(homeId, update, (err, homeUpdated) => {
+    if (err)
+      res
+        .status(500)
+        .send({ message: `Erreur lors de la modification du logement : ${err}` });
+    res.status(200).send({ home: homeUpdated });
+  });
 }
 module.exports = {
   signIn,
   signUp,
   addHome,
   getHomes,
-  deleteHome
+  deleteHome,
+  updateHome,
+  getHome
 };
