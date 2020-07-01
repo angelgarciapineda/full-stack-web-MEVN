@@ -29,6 +29,9 @@ api.get("/panel/:homeId", homeController.getPanels);
 api.post("/target/:homeId", homeController.addTarget);
 api.get("/target/:homeId", homeController.getTargets);
 
+api.post("/timeslot/:homeId", homeController.addTimeSlot);
+api.get("/timeslot/panel/target/:homeId", homeController.getPanels_Targets);
+
 api.post("/position/sun", sunController.getPositionSun);
 
 api.get("/private", auth, (req, res) => {

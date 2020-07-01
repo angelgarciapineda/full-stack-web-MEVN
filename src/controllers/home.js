@@ -2,7 +2,8 @@
 const Home = require("../models/home");
 const Panel = require("../models/panel");
 const Target = require("../models/target");
-
+const TimeSlot = require("../models/timeslot");
+//#region
 /* Fonction pour enregistrer un panneau dans la maison */
 function addPanel(req, res) {
     let p = new Panel();
@@ -202,6 +203,125 @@ function updateTarget(req, res) {
         res.status(200).send({ target: targetUpdated });
     });
 }
+//#endregion
+/* Fonction pour enregistrer un cible dans la maison */
+function addTimeSlot(req, res) {
+    let ts = new TimeSlot();
+    ts.name = req.body.name;
+    ts.startdate = req.body.startdate;
+    ts.enddate = req.body.enddate;
+    ts.starttime = req.body.starttime;
+    ts.endtime = req.body.endtime;
+    ts.days = req.body.days;
+    ts.panel = req.body.idpanel;
+    ts.target = req.body.idtarget;
+
+    ts.save()
+    /* Pour réaliser la référence d'une plage horaire avec la maison
+    on doit modifier l'attribut de "time_slots" qui se trouve dans le modèle de "Home" */
+    Home.updateOne({ _id: req.params.homeId }, {
+        $push: {
+            "time_slots": ts._id
+        }
+    },
+        (error) => {
+            if (error) {
+                res.json({
+                    sucess: false,
+                    msj: "Il y a un érreur: ",
+                    error
+                });
+            } else {
+                res.json({
+                    sucess: true,
+                    msj: "La plage horaire a été ajoutée avec succès",
+                    id_timeSlot: ts._id,
+                });
+            }
+        })
+    console.log(ts);
+
+}
+//Fonction pour obtenir les plages horaires d'une maison en particulier
+function getTimeSlots(req, res) {
+    Home.findById({ _id: req.params.homeId })
+        .populate('targets')
+        .exec((err, home) => {
+            if (err)
+                return res.status(500).send({ message: `Erreur ${err}` });
+            if (!home)
+                return res.status(400).send({ message: `On ne peut pas trouver les données de ce logement` })
+
+            return res.status(200).send({ home });
+        })
+}
+/* Fonction pour obtenir une plage horaire en particulier */
+function getTimeSlot(req, res) {
+    let TargetId = req.params.targetId;
+    Target.findById(TargetId, (err, target) => {
+        if (err)
+            return res
+                .status(500)
+                .send({ message: `Erreur ${err}` });
+        if (!target)
+            return res.status(404).send({ message: `Le logement n'existe pas` });
+        res.status(200).send({ target });
+    });
+}
+/* Fonction pour effacer une plage horaire en particulier */
+function deleteTimeSlot(req, res) {
+    Target.findByIdAndRemove({ _id: req.params.targetId }, (err, targetRemoved) => {
+        if (err) {
+            res.status(500).send({ message: "ERREUR : ", err })
+        }
+        if (!targetRemoved) {
+            res.status(400).send({ message: "ERREUR ne se peut pas effacer le logement" })
+        }
+        else {
+            /* Après d'effacer la plage horaire on supprime la référence
+            qui existe dans le modèle de "Home" */
+            Home.findByIdAndUpdate({ _id: req.params.homeId }, {
+                '$pull': {
+                    'targets': req.params.targetId
+                }
+            }, (err, updateTarget) => {
+                if (err) {
+                    res.status(500).send({ message: `ERREUR ${err}` })
+                }
+                if (!updatePanel) {
+                    res.status(400).send({ message: `Suppression pas réussie` })
+                }
+                res.status(200).send({ message: `Suppression réussie du logement ${targetRemoved} ` + ` Modification réussie de référence ${updateTarget}` })
+            })
+        }
+    })
+}
+/* Fonction pour modifier une plage horarire en particulier */
+function updateTimeSlot(req, res) {
+    let targetId = req.params.targetId;
+    let update = req.body;
+    Target.findByIdAndUpdate(targetId, update, (err, targetUpdated) => {
+        if (err)
+            res
+                .status(500)
+                .send({ message: `Erreur lors de la modification du logement : ${err}` });
+        res.status(200).send({ target: targetUpdated });
+    });
+}
+//Fonction pour obtenir les plages horaires d'une maison en particulier
+function getPanels_Targets(req, res) {
+    Home.findById({ _id: req.params.homeId })
+        .populate('panels')
+        .populate('targets')
+        .exec((err, home) => {
+            if (err)
+                return res.status(500).send({ message: `Erreur ${err}` });
+            if (!home)
+                return res.status(400).send({ message: `On ne peut pas trouver les données de ce logement` })
+
+            return res.status(200).send({ home });
+        })
+}
 module.exports = {
     addPanel,
     getPanels,
@@ -212,5 +332,11 @@ module.exports = {
     getTargets,
     getTarget,
     deleteTarget,
-    updateTarget
+    updateTarget,
+    addTimeSlot,
+    getTimeSlots,
+    getTimeSlot,
+    deleteTimeSlot,
+    updateTimeSlot,
+    getPanels_Targets
 };

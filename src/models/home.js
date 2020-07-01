@@ -15,6 +15,9 @@ const HomeSchema = new Schema({
   }],
   targets:[{
     type: Schema.Types.ObjectId, ref: 'Target', require:false
+  }],
+  time_slots:[{
+    type: Schema.Types.ObjectId, ref: 'TimeSlot', require:false
   }]
 });
 
