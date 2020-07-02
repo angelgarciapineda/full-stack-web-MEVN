@@ -88,7 +88,7 @@ function deletePanel(req, res) {
                 if (!updatePanel) {
                     res.status(400).send({ message: `Suppression pas réussie` })
                 }
-                res.status(200).send({ message: `Suppression réussie du logement ${panelRemoved} ` + ` Modification réussie de référence ${updatePanel}` })
+                res.status(200).send({ message: `Suppression réussie du panneau ${panelRemoved} ` + ` Modification réussie de référence ${updatePanel}` })
             })
         }
     })
