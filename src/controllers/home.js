@@ -105,19 +105,6 @@ function updatePanel(req, res) {
         res.status(200).send({ panel: panelUpdated });
     });
 }
-function updatePanelGeolocation(req, res) {
-    Panel.findByIdAndUpdate({ _id: req.params.panelId }, {
-        '$set': {
-            'azimuth': req.body.azimuth,
-            'elevation': req.body.elevation
-        }
-    }, (err, updatePanel) => {
-        if (err) {
-            res.status(500).send({ message: `ERREUR ${err}` })
-        }
-        res.status(200).send({ message: ` Modification réussie de référence ${updatePanel}` })
-    })
-}
 /* Fonction pour enregistrer un cible dans la maison */
 function addTarget(req, res) {
     let t = new Target();
@@ -351,6 +338,5 @@ module.exports = {
     getTimeSlot,
     deleteTimeSlot,
     updateTimeSlot,
-    getPanels_Targets,
-    updatePanelGeolocation
+    getPanels_Targets
 };

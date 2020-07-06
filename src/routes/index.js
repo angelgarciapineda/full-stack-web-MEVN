@@ -31,8 +31,6 @@ api.get("/panel/:panelId/:homeId", homeController.getPanel);
 api.get("/panel/:homeId", homeController.getPanels);
 //route pour modifier un panneau en particulier
 api.put("/panel/:panelId", homeController.updatePanel);
-//route pour modifier les attributs d'azimuth et hauteur
-api.put("/panel/:panelId/:homeId", homeController.updatePanelGeolocation);
 //route pour supprimer un panneau en particulier
 api.delete("/panel/:panelId/:homeId", homeController.deletePanel);
 
