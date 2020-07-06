@@ -75,31 +75,34 @@ function addHome(req, res) {
   h.latitude = req.body.latitude;
   h.longitude = req.body.longitude;
 
-  //save enregistre l'objet de la maison
-  h.save()
-  /* Pour réaliser la réference de la maison avec l'utilisateur
-  je dois modifier l'attribut de "homes" qui se trouve dans le modèle de "User" */
-  User.updateOne({ _id: req.params.userId }, {
-    $push: {
-      "homes": h._id
-    }
-  },
-    (error) => {
-      if (error) {
-        res.json({
-          sucess: false,
-          msj: "Il y a eu un érreur pour faire la référence",
-          error
-        });
-      } else {
-        res.json({
-          sucess: true,
-          msj: "La maison a été ajoutée avec succès",
-          id_home: h._id
-        });
+  if (h.name == null || h.street == null | h.postalcode == null || h.city == null || h.latitude == null || h.longitude == null) {
+    return res.status(400).send({ message: "Il faut remplir tous les champs" })
+  } else {
+    //save enregistre l'objet de la maison
+    h.save()
+    /* Pour réaliser la réference de la maison avec l'utilisateur
+    je dois modifier l'attribut de "homes" qui se trouve dans le modèle de "User" */
+    User.updateOne({ _id: req.params.userId }, {
+      $push: {
+        "homes": h._id
       }
-    })
-
+    },
+      (error) => {
+        if (error) {
+          res.json({
+            sucess: false,
+            msj: "Il y a eu un érreur pour faire la référence",
+            error
+          });
+        } else {
+          res.json({
+            sucess: true,
+            msj: "La maison a été ajoutée avec succès",
+            id_home: h._id
+          });
+        }
+      })
+  }
 }
 //Fonction pour obtenir les maison d'un utilsateur en particulier
 function getHomes(req, res) {

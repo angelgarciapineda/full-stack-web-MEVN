@@ -8,36 +8,39 @@ const TimeSlot = require("../models/timeslot");
 function addPanel(req, res) {
     let p = new Panel();
     p.name = req.body.name;
-    p.azimut = req.body.azimut;
+    p.azimuth = req.body.azimuth;
     p.elevation = req.body.elevation;
     p.latitude = req.body.latitude;
     p.longitude = req.body.longitude;
 
-    //save enregistre le panneau dans le modèle Panel
-    p.save()
-    /* Pour réaliser la réference du panneau avec la maison
-    je dois modifier l'attribut de "panels" qui se trouve dans le modèle de "Home" */
-    Home.updateOne({ _id: req.params.homeId }, {
-        $push: {
-            "panels": p._id
-        }
-    },
-        (error) => {
-            if (error) {
-                res.json({
-                    sucess: false,
-                    msj: "Il y a un érreur: ",
-                    error
-                });
-            } else {
-                res.json({
-                    sucess: true,
-                    msj: "Le panneau a été ajoutée avec succès",
-                    id_panel: p._id
-                });
+    if (p.name == null || p.azimuth == null || p.elevation == null || p.latitude == null || p.longitude == null) {
+        return res.status(400).send({ message: "Il faut remplir tous les champs" })
+    } else {
+        //save enregistre le panneau dans le modèle Panel
+        p.save()
+        /* Pour réaliser la réference du panneau avec la maison
+        je dois modifier l'attribut de "panels" qui se trouve dans le modèle de "Home" */
+        Home.updateOne({ _id: req.params.homeId }, {
+            $push: {
+                "panels": p._id
             }
-        })
-
+        },
+            (error) => {
+                if (error) {
+                    res.json({
+                        sucess: false,
+                        message: "Il y a un érreur: ",
+                        error
+                    });
+                } else {
+                    res.json({
+                        sucess: true,
+                        message: "Le panneau a été ajouté avec succès",
+                        id_panel: p._id
+                    });
+                }
+            })
+    }
 }
 //Fonction pour obtenir les panneaux d'une maison en particulier
 function getPanels(req, res) {
@@ -47,7 +50,7 @@ function getPanels(req, res) {
             if (err)
                 return res.status(500).send({ message: `Erreur ${err}` });
             if (!home)
-                return res.status(400).send({ message: `On ne peut pas trouver les données de ce logement` })
+                return res.status(400).send({ message: `On ne peut pas trouver les données de ce panneau` })
 
             return res.status(200).send({ home });
         })
@@ -61,7 +64,7 @@ function getPanel(req, res) {
                 .status(500)
                 .send({ message: `Erreur ${err}` });
         if (!panel)
-            return res.status(404).send({ message: `Le logement n'existe pas` });
+            return res.status(404).send({ message: `Le panneau n'existe pas` });
         res.status(200).send({ panel });
     });
 }
@@ -72,7 +75,7 @@ function deletePanel(req, res) {
             res.status(500).send({ message: "ERREUR : ", err })
         }
         if (!panelRemoved) {
-            res.status(400).send({ message: "ERREUR ne se peut pas effacer le logement" })
+            res.status(400).send({ message: "ERREUR ne se peut pas effacer le panneau" })
         }
         else {
             /* Après d'effacer le panneau on supprime la référence
@@ -101,8 +104,8 @@ function updatePanel(req, res) {
         if (err)
             res
                 .status(500)
-                .send({ message: `Erreur lors de la modification du logement : ${err}` });
-        res.status(200).send({ panel: panelUpdated });
+                .send({ message: `Erreur lors de la modification du panneau : ${err}` });
+        res.status(200).send({ panel: panelUpdated, message: `Le panneau a été modifié avec succès` });
     });
 }
 /* Fonction pour enregistrer un cible dans la maison */
@@ -111,31 +114,34 @@ function addTarget(req, res) {
     t.name = req.body.name;
     t.latitude = req.body.latitude;
     t.longitude = req.body.longitude;
-
-    t.save()
-    /* Pour réaliser la référence du cible avec la maison
-    on doit modifier l'attribut de "targets" qui se trouve dans le modèle de "Home" */
-    Home.updateOne({ _id: req.params.homeId }, {
-        $push: {
-            "targets": t._id
-        }
-    },
-        (error) => {
-            if (error) {
-                res.json({
-                    sucess: false,
-                    msj: "Il y a un érreur: ",
-                    error
-                });
-            } else {
-                res.json({
-                    sucess: true,
-                    msj: "Le cible a été ajoutée avec succès",
-                    id_target: t._id
-                });
+    if (t.name == null || t.latitude == null || t.longitude == null) {
+        return res.status(400).send({ message: "Il faut remplir tous les champs" })
+    } else {
+        t.save()
+        /* Pour réaliser la référence du cible avec la maison
+        on doit modifier l'attribut de "targets" qui se trouve dans le modèle de "Home" */
+        Home.updateOne({ _id: req.params.homeId }, {
+            $push: {
+                "targets": t._id
             }
-        })
+        },
+            (error) => {
+                if (error) {
+                    res.json({
+                        sucess: false,
+                        message: "Il y a un érreur: ",
+                        error
+                    });
+                } else {
+                    res.json({
+                        sucess: true,
+                        message: "Le cible a été ajouté avec succès",
+                        id_target: t._id
+                    });
+                }
+            })
 
+    }
 }
 //Fonction pour obtenir les cibles d'une maison en particulier
 function getTargets(req, res) {
@@ -145,7 +151,7 @@ function getTargets(req, res) {
             if (err)
                 return res.status(500).send({ message: `Erreur ${err}` });
             if (!home)
-                return res.status(400).send({ message: `On ne peut pas trouver les données de ce logement` })
+                return res.status(400).send({ message: `On ne peut pas trouver les données de ce cible` })
 
             return res.status(200).send({ home });
         })
@@ -159,7 +165,7 @@ function getTarget(req, res) {
                 .status(500)
                 .send({ message: `Erreur ${err}` });
         if (!target)
-            return res.status(404).send({ message: `Le logement n'existe pas` });
+            return res.status(404).send({ message: `Le cible n'existe pas` });
         res.status(200).send({ target });
     });
 }
@@ -170,7 +176,7 @@ function deleteTarget(req, res) {
             res.status(500).send({ message: "ERREUR : ", err })
         }
         if (!targetRemoved) {
-            res.status(400).send({ message: "ERREUR ne se peut pas effacer le logement" })
+            res.status(400).send({ message: "ERREUR ne se peut pas effacer le cible" })
         }
         else {
             /* Après d'effacer le cible on supprime la référence
@@ -186,7 +192,7 @@ function deleteTarget(req, res) {
                 if (!updatePanel) {
                     res.status(400).send({ message: `Suppression pas réussie` })
                 }
-                res.status(200).send({ message: `Suppression réussie du logement ${targetRemoved} ` + ` Modification réussie de référence ${updateTarget}` })
+                res.status(200).send({ message: `Suppression réussie du cible ${targetRemoved} ` + ` Modification réussie de référence ${updateTarget}` })
             })
         }
     })
@@ -199,8 +205,8 @@ function updateTarget(req, res) {
         if (err)
             res
                 .status(500)
-                .send({ message: `Erreur lors de la modification du logement : ${err}` });
-        res.status(200).send({ target: targetUpdated });
+                .send({ message: `Erreur lors de la modification du cible : ${err}` });
+        res.status(200).send({ target: targetUpdated, message:`Le cible a été modifié avec succès` });
     });
 }
 //#endregion
