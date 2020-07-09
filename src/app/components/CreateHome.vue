@@ -3,7 +3,7 @@
     <div class="row pt-5">
       <div class="col-md-4">
         <b-card bg-variant="light">
-          <b-form @submit.prevent="saveHome" autocomplete="off">
+          <b-form @submit="saveHome" autocomplete="off">
             <p class="h2">Créer un nouveau logement :</p>
             <b-form-group label-cols-sm="3" label="Nom:" label-align-sm="right">
               <b-form-input v-model="home.name"></b-form-input>
@@ -125,7 +125,6 @@ export default {
         this.axios
           .post(`/home/${this.idUser}`, this.home)
           .then(res => {
-            /* console.log(res.data); */
             this.getHomes();
           })
           .catch(error => {

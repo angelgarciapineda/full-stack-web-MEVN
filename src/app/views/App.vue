@@ -39,6 +39,7 @@
         </b-tab>
       </b-tabs>
     </b-card>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -51,7 +52,7 @@ import Target from "../components/Target.vue";
 import TimeSlot from "../components/TimeSlot.vue";
 
 export default {
-  name: "User-home",
+  name: "App",
   components: {
     CreateHome,
     Weather,
@@ -63,7 +64,9 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+    console.log(this.$route);
+  },
   methods: {}
 };
 </script>

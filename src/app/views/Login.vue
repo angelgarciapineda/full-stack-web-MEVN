@@ -68,7 +68,7 @@ export default {
         .post("/signin", this.seconnecter)
         .then(res => {
           const id = res.data.iduser;
-          this.$router.push({ path: `/app/${id}` });
+          this.$router.push({ path: `/${id}` });
         })
         .catch(error => {
           this.message = error.response.data.message;

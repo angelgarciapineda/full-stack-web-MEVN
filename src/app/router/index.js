@@ -20,7 +20,7 @@ const routes = [
     component: () => import("../views/Login.vue")
   },
   {
-    path: "/app/:id",
+    path: "/:id",
     name: "App",
     component: () => import("../views/App.vue")
   }
@@ -28,7 +28,7 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  /* base: process.env.BASE_URL, */
+  base: process.env.BASE_URL,
   routes
 })
 
