@@ -5,11 +5,10 @@ const service = require("../services");
 
 //Fonction pour s'inscrire
 function signUp(req, res) {
-  const user = new User({
-    email: req.body.email,
-    displayName: req.body.displayName,
-    password: req.body.password,
-  });
+  let user = new User();
+  user.email = req.body.email;
+  user.displayName = req.body.displayName;
+  user.password = req.body.password;
 
   //user.gravatar() me donne l'url d'un avatar à partir du mail que l'utilisateur a mis
   user.avatar = user.gravatar();
@@ -39,7 +38,7 @@ function signIn(req, res) {
     //findOne recherche le email dans le modèle User
     User.findOne({ email: req.body.email }, (err, user) => {
       if (err)
-        return res.status(500).send({ message: `échec de la connexion: ${err}` });
+        return res.status(500).send({ message: `ERREUR: ${err}` });
       if (!user)
         return res
           .status(404)
@@ -49,11 +48,11 @@ function signIn(req, res) {
       qui se trouve dans la base de données crypté*/
       user.comparePassword(req.body.password, (err, isMatch) => {
         if (err)
-          return res.status(500).send({ message: `échec de la connexion: ${err}` });
+          return res.status(500).send({ message: `ERREUR: ${err}` });
         if (!isMatch)
           return res
             .status(404)
-            .send({ message: `échec de la connexion: ${req.body.email}` });
+            .send({ message: `Echec de la connexion: ${req.body.email}` });
 
         req.user = user;
         return res.status(200).send({
