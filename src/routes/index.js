@@ -7,6 +7,7 @@ const sunController = require("../controllers/sun");
 
 const api = express.Router();
 const auth = require("../middlewares/auth");
+
 //route pour s'inscrire
 api.post("/signup", userController.signUp);
 //route pour se connecter
