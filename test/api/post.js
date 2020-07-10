@@ -18,7 +18,7 @@ describe('POST /signup', () => {
             .send({
                 email: 'angel@gmail.com',
                 displayName: 'Test',
-                password: 'angel',
+                password: 'testest',
             })
             .end(function (err, res) {
                 console.log(res.body)
@@ -62,7 +62,7 @@ describe('POST /signin', () => {
 })
 /* TEST POUR VALIDER QUAND LE MOT DE PASSE N'EST PAS BON*/
 describe('POST /signin', () => {
-    it('ERREUR signin ', (done) => {
+    it('ERROR signin ', (done) => {
         chai.request(url)
             .post('/signin')
             .send({
@@ -80,9 +80,29 @@ describe('POST /signin', () => {
 /* TEST POUR MONTRER TOUS LES LOGEMENTS D'UN UTILISATEUR*/
 describe('GET /homes', () => {
     let id="5f0316b4ee56a71ba0e2591a"
-    it('ERREUR signin ', (done) => {
+    it('Ok homes ', (done) => {
         chai.request(url)
             .get(`/home/${id}`)
+            .end(function (err, res) {
+                console.log(res.body)
+                expect(res).to.have.status(200)
+                done();
+            })
+    })
+})
+
+/* TEST POUR OBTENIR LA POSITION DU SOLEIL*/
+describe('POST /position/sun', () => {
+    it('OK position sun ', (done) => {
+        chai.request(url)
+            .post('/position/sun')
+            .send({
+                date: "2020-07-09",
+                time: "18:38",
+                latitude: "47.2331",
+                longitude: "-1.5507",
+                gmtdiff: "2"
+            })
             .end(function (err, res) {
                 console.log(res.body)
                 expect(res).to.have.status(200)

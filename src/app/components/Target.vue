@@ -108,7 +108,7 @@ export default {
           this.homes = res.data.user.homes;
         })
         .catch(error => {
-          console.log("ERREUR : ", error);
+          console.log("ERREUR : ", error.response);
         });
     },
     addTarget() {
@@ -120,7 +120,7 @@ export default {
             this.message = res.data.message;
           })
           .catch(error => {
-            console.log("ERREUR : ", error);
+            console.log("ERREUR : ", error.response);
             this.message = error.response.data.message;
           });
       } else {
@@ -147,7 +147,7 @@ export default {
           this.targets = res.data.home.targets;
         })
         .catch(error => {
-          console.log("ERREUR : ", error);
+          console.log("ERREUR : ", error.response);
         });
     },
     deleteTarget(id) {

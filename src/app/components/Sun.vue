@@ -4,7 +4,8 @@
       <div class="col-md-6">
         <b-card bg-variant="light" style="height:100%">
           <b-form @submit.prevent="getPositionSun" autocomplete="off">
-            <p class="h2">Obtenir la position du soleil :</p><br>
+            <p class="h2">Obtenir la position du soleil :</p>
+            <br />
             <b-form-group>
               <b-button
                 @click.prevent="getLocation"
@@ -158,7 +159,7 @@ export default {
           this.homes = res.data.user.homes;
         })
         .catch(error => {
-          console.log("Hay un error: ", error);
+          console.log("ERREUR: ", error.response);
         });
     },
     getPositionSun() {
@@ -170,7 +171,7 @@ export default {
           this.elevation = res.data._altitude.toFixed(2);
         })
         .catch(error => {
-          console.log("Erreur : ", error);
+          console.log("ERREUR : ", error.response);
         });
     },
     getPanels() {
@@ -181,7 +182,7 @@ export default {
           this.panels = res.data.home.panels;
         })
         .catch(error => {
-          console.log("ERREUR : ", error);
+          console.log("ERREUR : ", error.response);
         });
     },
     updatePanel(id) {
@@ -213,7 +214,7 @@ export default {
           this.getPanels();
         })
         .catch(error => {
-          console.log(error.response);
+          console.log("ERREUR : ", error.response);
         });
     },
     success(pos) {
@@ -222,7 +223,7 @@ export default {
       this.sun.longitude = crd.longitude.toFixed(4);
     },
     error(err) {
-      console.warn("ERROR(" + err.code + "): " + err.message);
+      console.warn("ERREUR(" + err.code + "): " + err.message);
     },
     getLocation() {
       navigator.geolocation.getCurrentPosition(

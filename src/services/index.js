@@ -8,7 +8,7 @@ function createToken(user) {
   const payload = {
     sub: user._id, //L'ID c'est de la bd
     iat: moment().unix(), //renvoie la date
-    exp: moment().add(14, "days").unix(), //définir une heure d'expiration
+    exp: moment().add(14,"minutes").unix(), //définir une heure d'expiration
   };
   return jwt.encode(payload, config.SECRET_TOKEN);
 }

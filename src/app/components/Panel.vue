@@ -125,7 +125,7 @@ export default {
           this.homes = res.data.user.homes;
         })
         .catch(error => {
-          console.log("ERREUR: ", error);
+          console.log("ERREUR: ", error.response);
         });
     },
     addPanel() {
@@ -137,7 +137,7 @@ export default {
             this.message = res.data.message;
           })
           .catch(error => {
-            console.log("ERREUR : ", error);
+            console.log("ERREUR : ", error.response);
             this.message = error.response.data.message;
           });
       } else {
@@ -164,7 +164,7 @@ export default {
           this.panels = res.data.home.panels;
         })
         .catch(error => {
-          console.log("ERREUR : ", error);
+          console.log("ERREUR : ", error.response);
         });
     },
     deletePanel(id) {
