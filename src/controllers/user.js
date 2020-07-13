@@ -118,6 +118,23 @@ function getHomes(req, res) {
       return res.status(200).send({ user });
     })
 }
+//Fonction pour obtenir les maison d'un utilsateur en particulier
+function getAPI(req, res) {
+  //findById recherche s'il existe l'utilisateur
+  User.findById({ _id: req.params.userId })
+    .populate('homes')
+    .populate('panels')
+    .populate('targets')
+    .exec((err, user) => {
+      if (err)
+        return res.status(500).send({ message: `Erreur ${err}` });
+      if (!user)
+        return res.status(400).send({ message: `On ne peut pas trouver les données de cet utilisateur` })
+
+      //let _homes = users.homes;
+      return res.status(200).send({ user });
+    })
+}
 /* Fonction pour obtenir un logement en particulier */
 function getHome(req, res) {
   let HomeId = req.params.homeId;
@@ -178,5 +195,6 @@ module.exports = {
   getHomes,
   deleteHome,
   updateHome,
-  getHome
+  getHome,
+  getAPI
 };
