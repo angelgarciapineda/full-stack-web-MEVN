@@ -50,6 +50,8 @@ api.delete("/target/:targetId/:homeId", homeController.deleteTarget);
 api.post("/timeslot/:homeId", homeController.addTimeSlot);
 //route pour obtenir les panneaux et cibles d'un logement en particulier
 api.get("/timeslot/panel/target/:homeId", homeController.getPanels_Targets);
+//route pour obtenir les panneaux et cibles d'un logement en particulier
+api.get("/:userId", userController.getAPI);
 
 //route pour obtenir la position du soleil
 api.post("/position/sun", sunController.getPositionSun);
