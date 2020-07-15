@@ -3,15 +3,16 @@ let chaiHttp = require('chai-http');
 const expect = require('chai').expect;
 
 
+
 chai.use(chaiHttp);
 const url = 'http://localhost:3000/api';
 
 
 
 const app = require('../../src/routes/index.js');
-const conn = require('../../src/database.js')
+const conn = require('../../src/database.js');
 
-/* TEST POUR VALIDER QUAND UN UTILISATEUR EXISTE DEJA */
+//TEST POUR VALIDER QUAND UN UTILISATEUR EXISTE DEJA
 describe('POST /signup', () => {
     it('ERROR signup', (done) => {
         chai.request(url).post('/signup')
@@ -28,7 +29,7 @@ describe('POST /signup', () => {
     })
 })
 
-/* TEST POUR SE CONNECTER */
+//TEST POUR SE CONNECTER
 describe('POST /signin', () => {
     it('OK signin', (done) => {
         chai.request(url)
@@ -44,7 +45,7 @@ describe('POST /signin', () => {
             })
     })
 })
-/* TEST POUR VALIDER QUAND L'UTILISATEUR N'EXISTE PAS */
+// TEST POUR VALIDER QUAND L'UTILISATEUR N'EXISTE PAS
 describe('POST /signin', () => {
     it('ERROR signin', (done) => {
         chai.request(url)
@@ -60,7 +61,7 @@ describe('POST /signin', () => {
             })
     })
 })
-/* TEST POUR VALIDER QUAND LE MOT DE PASSE N'EST PAS BON*/
+// TEST POUR VALIDER QUAND LE MOT DE PASSE N'EST PAS BON
 describe('POST /signin', () => {
     it('ERROR signin ', (done) => {
         chai.request(url)
@@ -77,9 +78,9 @@ describe('POST /signin', () => {
     })
 })
 
-/* TEST POUR MONTRER TOUS LES LOGEMENTS D'UN UTILISATEUR*/
+// TEST POUR MONTRER TOUS LES LOGEMENTS D'UN UTILISATEUR
 describe('GET /homes', () => {
-    let id="5f0316b4ee56a71ba0e2591a"
+    let id="5f0c2f2af1caed0e40a0272e"
     it('Ok homes ', (done) => {
         chai.request(url)
             .get(`/home/${id}`)
@@ -91,7 +92,7 @@ describe('GET /homes', () => {
     })
 })
 
-/* TEST POUR OBTENIR LA POSITION DU SOLEIL*/
+//TEST POUR OBTENIR LA POSITION DU SOLEIL
 describe('POST /position/sun', () => {
     it('OK position sun ', (done) => {
         chai.request(url)
