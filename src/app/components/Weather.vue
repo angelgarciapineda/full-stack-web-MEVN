@@ -28,7 +28,7 @@
             >
               <b-form-input id="nested-longitude" v-model="meteo._longitude"></b-form-input>
             </b-form-group>
-            <p style="color:red">{{message}}</p>
+            <p style="color:green">{{message}}</p>
             <b-form-group>
               <b-button type="submit" variant="dark" style="float:right">
                 <b-icon icon="search" aria-hidden="true"></b-icon>Consulter

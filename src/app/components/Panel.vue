@@ -42,7 +42,7 @@
             <b-form-group label-cols-sm="3" label="Longitude:" label-align-sm="right">
               <b-form-input v-model="panel.longitude"></b-form-input>
             </b-form-group>
-            <p style="color:red">{{message}}</p>
+            <p style="color:green">{{message}}</p>
             <b-form-group v-if="edit===false">
               <b-button type="submit" variant="dark" style="float:right">Enregistrer</b-button>
             </b-form-group>

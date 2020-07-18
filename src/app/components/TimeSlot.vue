@@ -5,7 +5,7 @@
         <b-card bg-variant="light" style="height:100%">
           <b-form @submit.prevent="addTimeSlot" autocomplete="off">
             <p class="h2">Choissisez une maison :</p>
-            <b-form-select v-model="selected" @change="getPanels_Targets">
+            <b-form-select v-model="selected" @change ="getPanels_Targets">
               <b-form-select-option
                 v-for="home of homes"
                 :key="home._id"
